@@ -48,6 +48,12 @@ A stage reruns only when its inputs change, so editing one chapter title re-rend
 
 ## context.md
 
+Copy `context.sample.md` and edit it:
+
+```
+cp context.sample.md ~/Downloads/context.md
+```
+
 ```markdown
 ---
 title: Làm memo thân thiện với AI agent
