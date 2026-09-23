@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session review</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #ffffff; --bg-2: #f6f6f6; --ink: #23252c; --ink-2: #636466; --ink-3: #9b9b9b;
+    --line: #e7e7e7; --brand: #e13f5e; --brand-soft: #f8d9df; --good: #0f7a32; --bad: #c1272d;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
+  button { font: inherit; cursor: pointer; }
+  input, textarea { font: inherit; color: inherit; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 15px; font-weight: 600; margin: 0; }
+  header .session { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
+  header .status { margin-left: auto; font-size: 13px; color: var(--ink-2); }
+  .primary { background: var(--brand); color: #fff; border: 0; border-radius: 4px; padding: 7px 16px; font-weight: 500; }
+  .ghost { background: none; border: 1px solid var(--line); border-radius: 4px; padding: 3px 9px; font-size: 12.5px; color: var(--ink-2); }
+  .ghost:hover { border-color: var(--ink-3); color: var(--ink); }
+  main { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 32px; padding: 24px; max-width: 1400px; margin: 0 auto; }
+  .stage { position: sticky; top: 76px; align-self: start; }
+  video { width: 100%; background: #17181c; border-radius: 6px; display: block; }
+  .now { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+  .poster img { width: 100%; border: 1px solid var(--line); border-radius: 6px; margin-top: 16px; }
+  section { margin-bottom: 36px; }
+  .eyebrow { font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin: 0 0 12px; display: flex; gap: 8px; align-items: baseline; }
+  .eyebrow b { color: var(--ink); font-weight: 600; }
+  label.field { display: block; margin-bottom: 12px; }
+  label.field span { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink-2); margin-bottom: 4px; }
+  label.field input, label.field textarea { width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px; background: var(--bg); }
+  label.field textarea { resize: vertical; min-height: 60px; }
+  .over { color: var(--bad); }
+  .row { display: grid; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--line); }
+  .chapter { grid-template-columns: 70px 1fr auto auto; }
+  .time { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); width: 70px; border: 1px solid var(--line); border-radius: 4px; padding: 5px 6px; }
+  .row input.title { border: 1px solid transparent; border-radius: 4px; padding: 5px 8px; width: 100%; }
+  .row input.title:hover, .row input.title:focus { border-color: var(--line); }
+  .clip { grid-template-columns: 22px 1fr; align-items: start; }
+  .clip[data-on="false"] { opacity: 0.55; }
+  .clip .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
+  .clip .range { font-family: var(--mono); color: var(--ink); }
+  .clip .why { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+  .nudge { display: inline-flex; gap: 2px; }
+  .score { font-family: var(--mono); background: var(--bg-2); padding: 0 6px; border-radius: 3px; }
+  .change { grid-template-columns: 56px 1fr auto; align-items: start; font-size: 14px; }
+  .change del { color: var(--bad); text-decoration-color: var(--bad); }
+  .change ins { color: var(--good); text-decoration: none; }
+  .change .reason { font-size: 12.5px; color: var(--ink-3); }
+  .change[data-reverted="true"] { opacity: 0.5; }
+  .muted { color: var(--ink-3); font-size: 13px; }
+  :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } .stage { position: static; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Session review</h1>
+  <span class="session" id="session"></span>
+  <span class="status" id="status" role="status"></span>
+  <button class="primary" id="save">Save approval</button>
+</header>
+<main>
+  <div class="stage">
+    <video id="video" src="/media/web.mp4" controls preload="metadata"></video>
+    <div class="now">Playing at <span id="now">0:00</span> · <span id="play-note">free play</span></div>
+    <div class="poster" id="poster"></div>
+  </div>
+  <div>
+    <section>
+      <h2 class="eyebrow">Poster and post</h2>
+      <label class="field"><span>Title <em id="title-count"></em></span><input id="f-title" maxlength="120"></label>
+      <label class="field"><span>Subtitle <em id="subtitle-count"></em></span><textarea id="f-subtitle" maxlength="240"></textarea></label>
+      <label class="field"><span>Speaker</span><input id="f-speaker"></label>
+      <label class="field"><span>Date</span><input id="f-date" placeholder="2026-09-18"></label>
+      <div class="muted">Poster frame at <b id="frame-time"></b> <button class="ghost" id="frame-now">Use current video time</button> <button class="ghost" id="frame-show">Show frame</button></div>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">Shorts <b id="clip-count"></b></h2>
+      <div id="clips"></div>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">Chapters <b id="chapter-count"></b> <button class="ghost" id="add-chapter">Add at current time</button></h2>
+      <div id="chapters"></div>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">Transcript corrections <b id="change-count"></b></h2>
+      <div id="changes"></div>
+    </section>
+  </div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const video = $('video');
+let data, approval, stopAt = null;
+
+const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2, '0')}:${r}` : `${m}:${r}`; };
+const parse = v => { const p = String(v).trim().split(':').map(Number); if (p.some(isNaN)) return NaN; return p.reduce((a, b) => a * 60 + b, 0); };
+const el = (tag, props = {}, ...kids) => { const e = document.createElement(tag); Object.assign(e, props); kids.forEach(k => e.append(k)); return e; };
+const status = (text, bad) => { $('status').textContent = text; $('status').style.color = bad ? 'var(--bad)' : ''; };
+
+function playRange(start, end, label) {
+  video.currentTime = start; stopAt = end; video.play();
+  $('play-note').textContent = label;
+}
+video.addEventListener('timeupdate', () => {
+  $('now').textContent = fmt(video.currentTime);
+  if (stopAt !== null && video.currentTime >= stopAt) { video.pause(); stopAt = null; $('play-note').textContent = 'free play'; }
+});
+video.addEventListener('seeking', () => { if (stopAt !== null && (video.currentTime < stopAt - 40 || video.currentTime > stopAt)) { stopAt = null; $('play-note').textContent = 'free play'; } });
+
+function counter(input, out, max) {
+  const update = () => { out.textContent = `${input.value.length}/${max}`; out.className = input.value.length > max ? 'over' : ''; };
+  input.addEventListener('input', update); update();
+}
+
+function renderClips() {
+  const host = $('clips'); host.replaceChildren();
+  approval.highlights.forEach(h => {
+    const box = el('input', { type: 'checkbox', checked: h.approved, id: `clip-${h.id}` });
+    box.setAttribute('aria-label', `Publish short ${h.id}`);
+    const row = el('div', { className: 'row clip' });
+    row.dataset.on = h.approved;
+    box.addEventListener('change', () => { h.approved = box.checked; row.dataset.on = box.checked; count(); });
+    const hook = el('input', { className: 'title', value: h.hook, id: `hook-${h.id}` });
+    hook.setAttribute('aria-label', `Hook for short ${h.id}`);
+    hook.addEventListener('input', () => h.hook = hook.value);
+    const range = el('span', { className: 'range' });
+    const drawRange = () => range.textContent = `${fmt(h.start)} – ${fmt(h.end)} · ${(h.end - h.start).toFixed(1)}s`;
+    const nudge = (key, d) => el('button', { className: 'ghost', textContent: `${key} ${d > 0 ? '+' : '−'}1s`, onclick: () => { h[key] = Math.max(0, +(h[key] + d).toFixed(2)); drawRange(); } });
+    drawRange();
+    row.append(box, el('div', {},
+      hook,
+      el('div', { className: 'meta' },
+        el('button', { className: 'ghost', textContent: '▶ Play clip', onclick: () => playRange(h.start, h.end, `short ${h.id}`) }),
+        range,
+        el('span', { className: 'nudge' }, nudge('start', -1), nudge('start', 1), nudge('end', -1), nudge('end', 1)),
+        el('span', { className: 'score', textContent: `score ${h.score}` })),
+      el('div', { className: 'why', textContent: h.why || '' })));
+    host.append(row);
+  });
+  count();
+}
+function count() { $('clip-count').textContent = `${approval.highlights.filter(h => h.approved).length} of ${approval.highlights.length} selected`; }
+
+function renderChapters() {
+  approval.chapters.sort((a, b) => a.start - b.start);
+  const host = $('chapters'); host.replaceChildren();
+  approval.chapters.forEach((c, i) => {
+    const time = el('input', { className: 'time', value: fmt(c.start) });
+    time.setAttribute('aria-label', `Start of chapter ${i + 1}`);
+    time.addEventListener('change', () => { const t = parse(time.value); if (!isNaN(t)) { c.start = t; renderChapters(); } else time.value = fmt(c.start); });
+    const title = el('input', { className: 'title', value: c.title });
+    title.setAttribute('aria-label', `Title of chapter ${i + 1}`);
+    title.addEventListener('input', () => c.title = title.value);
+    host.append(el('div', { className: 'row chapter' }, time, title,
+      el('button', { className: 'ghost', textContent: '▶', onclick: () => { video.currentTime = c.start; video.play(); } }),
+      el('button', { className: 'ghost', textContent: 'Remove', onclick: () => { approval.chapters.splice(i, 1); renderChapters(); } })));
+  });
+  $('chapter-count').textContent = approval.chapters.length;
+}
+
+function renderChanges() {
+  const host = $('changes'); host.replaceChildren();
+  const { accepted, rejected, failed_chunks } = data.changes;
+  $('change-count').textContent = `${accepted.length} applied · ${rejected.length} rejected`;
+  if (failed_chunks.length) host.append(el('p', { className: 'muted', textContent: `Chunks kept as raw text after two failed attempts: ${failed_chunks.join(', ')}` }));
+  accepted.forEach(c => {
+    const row = el('div', { className: 'row change' });
+    row.dataset.reverted = !!c.reverted;
+    const revert = el('button', { className: 'ghost', textContent: c.reverted ? 'Reverted' : 'Revert', disabled: !!c.reverted });
+    revert.onclick = async () => {
+      const r = await fetch('/api/revert', { method: 'POST', body: JSON.stringify({ id: c.id }) });
+      if (r.ok) { c.reverted = true; renderChanges(); status('Reverted. Run the pipeline again to refresh outputs.'); }
+    };
+    row.append(el('button', { className: 'ghost', textContent: fmt(c.start), onclick: () => { video.currentTime = c.start; video.play(); } }),
+      el('div', {}, el('del', { textContent: c.from }), el('br'), el('ins', { textContent: c.to }), el('div', { className: 'reason', textContent: c.reason })), revert);
+    host.append(row);
+  });
+  rejected.forEach(c => host.append(el('div', { className: 'row change' },
+    el('span', { className: 'time', textContent: fmt(c.start) }),
+    el('div', {}, el('span', { textContent: c.from }), el('br'), el('span', { className: 'reason', textContent: `Not applied: ${c.why}. Suggested: ${c.to}` })), el('span'))));
+  if (!accepted.length && !rejected.length) host.append(el('p', { className: 'muted', textContent: 'No corrections were suggested.' }));
+}
+
+function renderPoster() {
+  const host = $('poster'); host.replaceChildren();
+  if (data.has_poster) host.append(el('img', { src: `/poster.png?${Date.now()}`, alt: 'Rendered poster from the last run' }));
+  $('frame-time').textContent = fmt(approval.poster_frame);
+}
+
+async function load() {
+  data = await (await fetch('/api/state')).json();
+  approval = structuredClone(data.approval);
+  $('session').textContent = data.session;
+  $('f-title').value = approval.title; $('f-subtitle').value = approval.subtitle;
+  $('f-speaker').value = approval.speaker || ''; $('f-date').value = approval.date || '';
+  counter($('f-title'), $('title-count'), 70); counter($('f-subtitle'), $('subtitle-count'), 140);
+  renderClips(); renderChapters(); renderChanges(); renderPoster();
+  status(approval.auto ? 'Not approved yet' : 'Approved earlier. Saving again replaces it.');
+}
+
+$('frame-now').onclick = () => { approval.poster_frame = +video.currentTime.toFixed(2); renderPoster(); };
+$('frame-show').onclick = () => { video.pause(); video.currentTime = approval.poster_frame; };
+$('add-chapter').onclick = () => { approval.chapters.push({ start: +video.currentTime.toFixed(2), title: 'New chapter' }); renderChapters(); };
+$('save').onclick = async () => {
+  const body = { ...approval, title: $('f-title').value, subtitle: $('f-subtitle').value, speaker: $('f-speaker').value, date: $('f-date').value };
+  const r = await fetch('/api/approve', { method: 'POST', body: JSON.stringify(body) });
+  const out = await r.json();
+  if (out.ok) status(`Saved. Next: session-kit run ${data.session}`);
+  else status(out.error, true);
+};
+load().catch(e => status(`Could not load the session: ${e.message}`, true));
+</script>
+</body>
+</html>

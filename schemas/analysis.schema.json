@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": { "type": "string", "description": "Session title for the poster and the memo post, at most 70 characters" },
+    "subtitle": { "type": "string", "description": "One sentence on what a viewer takes away, at most 140 characters" },
+    "chapters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start": { "type": "number" },
+          "title": { "type": "string" }
+        },
+        "required": ["start", "title"]
+      }
+    },
+    "highlights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start": { "type": "number" },
+          "end": { "type": "number" },
+          "hook": { "type": "string" },
+          "why": { "type": "string" },
+          "score": { "type": "number" }
+        },
+        "required": ["start", "end", "hook", "why", "score"]
+      }
+    },
+    "poster_frame": { "type": "number", "description": "Second of the video whose frame best represents the session" }
+  },
+  "required": ["title", "subtitle", "chapters", "highlights", "poster_frame"]
+}

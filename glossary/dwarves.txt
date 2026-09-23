@@ -1,0 +1,20 @@
+# Shared terms for every session. One term per line, spelled the way it should appear.
+Dwarves Foundation
+memo.d.foundation
+d.foundation
+Cloudflare
+Cloudflare Workers
+GitHub
+TypeScript
+JavaScript
+React
+Next.js
+Elixir
+Golang
+Postgres
+DuckDB
+Claude
+Claude Code
+LLM
+MCP
+AI agent
