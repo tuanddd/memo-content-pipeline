@@ -26,7 +26,7 @@ def test_sidecar_matches_the_memo_contract(session):
     session.write_json("review", "approved.json", {
         "title": "T", "subtitle": "S", "speaker": "tieubao", "date": "2026-09-18",
         "chapters": [{"start": 0, "title": "Mở đầu"}, {"start": 40, "title": "Phần hai"}],
-        "highlights": [], "poster_frame": 10,
+        "highlights": [],
     })
     data = sidecar(session, "demo")
     assert data["version"] == 1 and data["src"] == "demo.mp4" and data["type"] == "video/mp4"

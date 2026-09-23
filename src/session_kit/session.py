@@ -33,6 +33,7 @@ class Context:
     shorts: int = 5
     series: str = "Show & Tell"
     whisper_model: str = "mlx-community/whisper-large-v3-mlx"
+    vad: bool = True
     correction_model: str = "sonnet"
     analysis_model: str = "opus"
     notes: str = ""

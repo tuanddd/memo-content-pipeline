@@ -78,7 +78,6 @@
       <label class="field"><span>Subtitle <em id="subtitle-count"></em></span><textarea id="f-subtitle" maxlength="240"></textarea></label>
       <label class="field"><span>Speaker</span><input id="f-speaker"></label>
       <label class="field"><span>Date</span><input id="f-date" placeholder="2026-09-18"></label>
-      <div class="muted">Poster frame at <b id="frame-time"></b> <button class="ghost" id="frame-now">Use current video time</button> <button class="ghost" id="frame-show">Show frame</button></div>
     </section>
 
     <section>
@@ -194,7 +193,6 @@ function renderChanges() {
 function renderPoster() {
   const host = $('poster'); host.replaceChildren();
   if (data.has_poster) host.append(el('img', { src: `/poster.png?${Date.now()}`, alt: 'Rendered poster from the last run' }));
-  $('frame-time').textContent = fmt(approval.poster_frame);
 }
 
 async function load() {
@@ -208,8 +206,6 @@ async function load() {
   status(approval.auto ? 'Not approved yet' : 'Approved earlier. Saving again replaces it.');
 }
 
-$('frame-now').onclick = () => { approval.poster_frame = +video.currentTime.toFixed(2); renderPoster(); };
-$('frame-show').onclick = () => { video.pause(); video.currentTime = approval.poster_frame; };
 $('add-chapter').onclick = () => { approval.chapters.push({ start: +video.currentTime.toFixed(2), title: 'New chapter' }); renderChapters(); };
 $('save').onclick = async () => {
   const body = { ...approval, title: $('f-title').value, subtitle: $('f-subtitle').value, speaker: $('f-speaker').value, date: $('f-date').value };

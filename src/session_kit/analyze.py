@@ -129,6 +129,5 @@ def run_stage(session: Session) -> None:
         "subtitle": " ".join(raw["subtitle"].split()),
         "chapters": snap_chapters(raw["chapters"], sents, total),
         "highlights": snap_highlights(raw["highlights"], sents),
-        "poster_frame": round(min(max(float(raw.get("poster_frame", 0)), 0.0), max(total - 1, 0.0)), 2),
     }
     session.write_json("analysis", "analysis.json", analysis)

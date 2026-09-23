@@ -30,8 +30,7 @@
         },
         "required": ["start", "end", "hook", "why", "score"]
       }
-    },
-    "poster_frame": { "type": "number", "description": "Second of the video whose frame best represents the session" }
+    }
   },
-  "required": ["title", "subtitle", "chapters", "highlights", "poster_frame"]
+  "required": ["title", "subtitle", "chapters", "highlights"]
 }

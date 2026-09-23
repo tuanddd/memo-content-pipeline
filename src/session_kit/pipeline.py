@@ -19,7 +19,7 @@ def stages(auto_review: bool) -> list[Stage]:
         ),
         Stage(
             "transcribe", "transcript",
-            inputs=lambda s: [media.audio_path(s), s.context.language, s.context.whisper_model, s.glossary()],
+            inputs=lambda s: [media.audio_path(s), s.context.language, s.context.whisper_model, s.context.vad, s.glossary()],
             outputs=lambda s: [transcribe.raw_path(s)],
             run=transcribe.run_stage,
         ),
@@ -50,7 +50,7 @@ def stages(auto_review: bool) -> list[Stage]:
         Stage(
             "poster", "poster",
             inputs=lambda s: [
-                review.approved_path(s), s.context.as_hashable(), s.video, media.probe_path(s),
+                review.approved_path(s), s.context.as_hashable(), media.probe_path(s),
                 recipe("templates/poster/poster.html", "assets/brand/logo.svg"),
             ],
             outputs=lambda s: [poster.poster_path(s)],
