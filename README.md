@@ -30,7 +30,7 @@ uv run session-kit review 2026-09-23-recording
 uv run session-kit run 2026-09-23-recording
 ```
 
-1. `new` creates `~/Sessions/<date>-<name>/` and copies the inputs. Set `SESSION_KIT_ROOT` to use another folder.
+1. `new` creates `sessions/<date>-<name>/` inside this repo (git-ignored) and copies the inputs. Set `SESSION_KIT_ROOT` to use another folder.
 2. The first `run` transcribes, corrects, analyses, then pauses for review.
 3. `review` opens a local page. Play each suggested short, keep or drop it, edit the title, subtitle and chapters, pick the poster frame, and revert any transcript correction you disagree with. Press Save.
 4. The second `run` renders the poster, the shorts and the memo bundle.
@@ -79,7 +79,7 @@ The notes below the frontmatter go to both LLM passes. Add terms that recur acro
 ## What you get
 
 ```
-~/Sessions/2026-09-18-agent-ready/
+sessions/2026-09-18-agent-ready/
   02-transcript/transcript.srt         corrected transcript
   02-transcript/changes.json           every correction, with its reason
   05-poster/poster.png                 1080×1350

@@ -3,7 +3,7 @@
 Everything runs locally. The session folder is the job state: each stage reads earlier folders and writes its own. A stage stores a hash of its inputs next to its output, and `run` skips any stage whose hash is unchanged. Editing one chapter title in review reruns only what depends on it.
 
 ```
-~/Sessions/2026-09-23-agent-ready/
+sessions/2026-09-23-agent-ready/
   input/           video.mp4, context.md, glossary.txt (optional)
   01-media/        audio-16k.wav, web.mp4
   02-transcript/   raw.json, corrected.json, changes.json, transcript.srt, transcript.vtt

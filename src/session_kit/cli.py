@@ -10,7 +10,7 @@ from . import correct, pipeline, review
 from .runner import ReviewPending, run_pipeline
 from .session import DIRS, Session, create_session, slugify
 
-DEFAULT_ROOT = Path(os.environ.get("SESSION_KIT_ROOT", Path.home() / "Sessions"))
+DEFAULT_ROOT = Path(os.environ.get("SESSION_KIT_ROOT", Path(__file__).resolve().parents[2] / "sessions"))
 
 
 def resolve(value: str) -> Session:
