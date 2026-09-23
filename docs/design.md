@@ -3,7 +3,7 @@
 Everything runs locally. The session folder is the job state: each stage reads earlier folders and writes its own. A stage stores a hash of its inputs next to its output, and `run` skips any stage whose hash is unchanged. Editing one chapter title in review reruns only what depends on it.
 
 ```
-sessions/2026-09-23-agent-ready/
+output/2026-09-23-agent-ready/
   input/           video.mp4, context.md, glossary.txt (optional)
   01-media/        audio-16k.wav, web.mp4
   02-transcript/   raw.json, corrected.json, changes.json, transcript.srt, transcript.vtt
@@ -86,7 +86,7 @@ Code then enforces what the model drifts on:
 
 ### 5. Poster
 
-An HTML template in `templates/poster/` with named text slots, rendered at 1080×1350 by the installed Chrome through Playwright, with the Plex fonts bundled in `assets/fonts`. The render fails if the title or subtitle runs past three lines, or the layout pushes past the bottom edge. It does not shrink text silently. Overflow is counted in lines, not pixels, because Vietnamese stacked diacritics rise above the line box.
+An HTML template in `templates/poster/` with named text slots, rendered at 1200×630 by the installed Chrome through Playwright, with the Plex fonts bundled in `assets/fonts`. The render fails if the title runs past three lines, the subtitle past two, or the layout pushes past the bottom edge. It does not shrink text silently. Overflow is counted in lines, not pixels, because Vietnamese stacked diacritics rise above the line box.
 
 ### 6. Shorts
 

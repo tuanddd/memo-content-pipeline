@@ -59,9 +59,3 @@ def run_stage(session: Session) -> None:
     ])
 
 
-def poster_frame(session: Session, at: float, target: Path) -> Path:
-    run([
-        "ffmpeg", "-y", "-v", "error", "-ss", f"{max(0.0, at):.2f}", "-i", str(session.video),
-        "-frames:v", "1", "-q:v", "2", str(target),
-    ])
-    return target

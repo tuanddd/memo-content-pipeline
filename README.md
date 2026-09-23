@@ -4,7 +4,7 @@
 
 From `video.mp4` and `context.md` it produces:
 
-- a 1080×1350 poster in the d.foundation look, with this session's title and a frame from the video
+- a 1200×630 poster in the d.foundation look, sized for Open Graph link previews, with this session's title, subtitle, speaker and length
 - an SRT and VTT transcript from MLX Whisper large-v3, corrected by a second LLM pass
 - vertical 1080×1920 shorts of about 20 seconds each, with Vietnamese captions burned in
 - a memo bundle: the `recording.json` sidecar memo's recording player reads, the web video, the poster and a draft note
@@ -24,15 +24,15 @@ Also needed: Google Chrome for the poster render, and the `claude` CLI logged in
 ## Run a session
 
 ```
-uv run session-kit new ~/Downloads/recording.mp4 --context context.md
+uv run session-kit new input/recording.mp4 --context input/context.md
 uv run session-kit run 2026-09-23-recording
 uv run session-kit review 2026-09-23-recording
 uv run session-kit run 2026-09-23-recording
 ```
 
-1. `new` creates `sessions/<date>-<name>/` inside this repo (git-ignored) and copies the inputs. Set `SESSION_KIT_ROOT` to use another folder.
+1. Put the video and `context.md` in `input/`. `new` creates `output/<date>-<name>/` and copies the inputs there. Git ignores both folders. Set `SESSION_KIT_ROOT` to use another folder.
 2. The first `run` transcribes, corrects, analyses, then pauses for review.
-3. `review` opens a local page. Play each suggested short, keep or drop it, edit the title, subtitle and chapters, pick the poster frame, and revert any transcript correction you disagree with. Press Save.
+3. `review` opens a local page. Play each suggested short, keep or drop it, edit the title, subtitle and chapters, and revert any transcript correction you disagree with. Press Save.
 4. The second `run` renders the poster, the shorts and the memo bundle.
 
 Other commands:
@@ -51,7 +51,7 @@ A stage reruns only when its inputs change, so editing one chapter title re-rend
 Copy `context.sample.md` and edit it:
 
 ```
-cp context.sample.md ~/Downloads/context.md
+cp context.sample.md input/context.md
 ```
 
 ```markdown
@@ -79,10 +79,10 @@ The notes below the frontmatter go to both LLM passes. Add terms that recur acro
 ## What you get
 
 ```
-sessions/2026-09-18-agent-ready/
+output/2026-09-18-agent-ready/
   02-transcript/transcript.srt         corrected transcript
   02-transcript/changes.json           every correction, with its reason
-  05-poster/poster.png                 1080×1350
+  05-poster/poster.png                 1200×630, Open Graph size
   06-shorts/01-<hook>.mp4 + .srt       1080×1920, 30 fps, -14 LUFS
   06-shorts/index.json                 hook, source range and file per short
   07-memo/<slug>-recording.json        the memo sidecar

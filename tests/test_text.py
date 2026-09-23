@@ -70,3 +70,10 @@ def test_words_crammed_into_a_fraction_of_a_second_are_dropped():
     assert is_hallucination({"text": "Cảm ơn các bạn đã theo dõi và hẹn gặp lại."}, crammed)
     normal = [word(w, i * 0.3, i * 0.3 + 0.25, 0.9) for i, w in enumerate("Phần hỏi đáp mình để ở cuối bài viết.".split())]
     assert not is_hallucination({"text": "Phần hỏi đáp mình để ở cuối bài viết."}, normal)
+
+
+def test_speech_ranges_closer_than_the_gap_are_merged():
+    from session_kit.transcribe import merge_ranges
+    found = [{"start": 0.5, "end": 4.0}, {"start": 4.6, "end": 9.0}, {"start": 15.0, "end": 20.0}]
+    assert merge_ranges(found) == [(0.5, 9.0), (15.0, 20.0)]
+    assert merge_ranges([]) == []

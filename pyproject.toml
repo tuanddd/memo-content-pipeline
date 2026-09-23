@@ -5,9 +5,11 @@ description = "Turn a session recording into a poster, a corrected transcript, s
 requires-python = ">=3.12"
 dependencies = [
   "mlx-whisper>=0.4.2",
+  "onnxruntime>=1.30.0",
   "pillow>=11.0",
   "playwright>=1.49",
   "pyyaml>=6.0",
+  "silero-vad>=6.2.2",
 ]
 
 [project.scripts]

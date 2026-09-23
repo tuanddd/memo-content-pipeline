@@ -5,11 +5,10 @@ import json
 from datetime import date as Date
 from pathlib import Path
 
-from .media import poster_frame
 from .review import load_approval
 from .session import REPO_ROOT, Session
 
-WIDTH, HEIGHT = 1080, 1350
+WIDTH, HEIGHT = 1200, 630
 TEMPLATE = REPO_ROOT / "templates" / "poster" / "poster.html"
 
 LABELS = {
@@ -48,7 +47,7 @@ def fill(template: str, values: dict[str, str]) -> str:
     return template
 
 
-def build_html(session: Session, frame: Path) -> str:
+def build_html(session: Session) -> str:
     approval = load_approval(session)
     ctx = session.context
     labels = LABELS.get(ctx.language, LABELS["en"])
@@ -59,7 +58,6 @@ def build_html(session: Session, frame: Path) -> str:
     return fill(TEMPLATE.read_text(encoding="utf-8"), {
         "fonts": (REPO_ROOT / "assets" / "fonts").as_uri(),
         "logo": (REPO_ROOT / "assets" / "brand" / "logo.svg").as_uri(),
-        "frame": frame.as_uri(),
         "series": html.escape(ctx.series),
         "title": html.escape(approval["title"]),
         "subtitle": html.escape(approval["subtitle"]),
@@ -87,8 +85,7 @@ def render(page_html: Path, target: Path) -> list[str]:
                     const lines = Math.round(el.getBoundingClientRect().height / lh);
                     return lines > Number(el.dataset.maxLines || 99);
                   }).map(el => el.dataset.slot);
-                  const frame = document.querySelector('.frame').getBoundingClientRect();
-                  if (frame.height < 300 || document.body.scrollHeight > innerHeight + 1) over.push('layout');
+                  if (document.body.scrollHeight > innerHeight + 1) over.push('layout');
                   return over;
                 }"""
             )
@@ -99,11 +96,8 @@ def render(page_html: Path, target: Path) -> list[str]:
 
 
 def run_stage(session: Session) -> None:
-    approval = load_approval(session)
-    folder = session.dir("poster")
-    frame = poster_frame(session, float(approval["poster_frame"]), folder / "frame.jpg")
-    page = folder / "poster.html"
-    page.write_text(build_html(session, frame), encoding="utf-8")
+    page = session.dir("poster") / "poster.html"
+    page.write_text(build_html(session), encoding="utf-8")
     overflow = render(page, poster_path(session))
     if overflow:
         raise PosterOverflow(

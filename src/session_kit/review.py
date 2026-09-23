@@ -30,7 +30,6 @@ def default_approval(session: Session, analysis: dict[str, Any]) -> dict[str, An
         "date": ctx.date,
         "chapters": analysis["chapters"],
         "highlights": [{**h, "approved": i < ctx.shorts} for i, h in enumerate(analysis["highlights"])],
-        "poster_frame": analysis["poster_frame"],
         "auto": True,
     }
 
@@ -87,7 +86,6 @@ def validate(session: Session, data: dict[str, Any]) -> dict[str, Any]:
         "date": data.get("date") or session.context.date,
         "chapters": chapters,
         "highlights": highlights,
-        "poster_frame": round(min(max(float(data.get("poster_frame", 0)), 0), total), 2),
         "auto": False,
     }
 
